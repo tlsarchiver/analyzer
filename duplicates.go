@@ -5,15 +5,23 @@ import (
 )
 
 func findDuplicates() {
+	fmt.Println("Duplicate keys:")
+
 	// Extract all the unique public keys, with the counts
 	rows, err := db.Query(
 		`select
             cert_content::jsonb->'FingerprintSHA1' as fingerprint,
             count(cert_content) as count
         from certificates
-        where cert_content::jsonb->'FingerprintSHA1' IS NOT NULL
-        group by cert_content::jsonb->'FingerprintSHA1'
-        order by count desc, fingerprint asc`,
+        where
+            cert_content::jsonb->'FingerprintSHA1' IS NOT NULL
+        group by
+            cert_content::jsonb->'FingerprintSHA1'
+        having
+            count(cert_content) > 1
+        order by
+            count desc,
+            fingerprint asc`,
 	)
 	defer rows.Close()
 	checkErr(err)
