@@ -27,11 +27,12 @@ func findDuplicates() {
 	checkErr(err)
 
 	for rows.Next() {
-		var fingerprint string
+		var fingerprint []byte
 		var count int
 		err = rows.Scan(&fingerprint, &count)
 		checkErr(err)
-		fmt.Printf("%d \t %s", count, fingerprint)
+
+		fmt.Printf("%d \t %s\n", count, fingerprint)
 	}
 
 }
